@@ -4,7 +4,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from django.views.decorators.csrf import csrf_exempt
-from pilotlogapi.models import pilotlogusers
+from pilotlogapi.models import PilotLogUsers
 
 
 @csrf_exempt
@@ -59,7 +59,7 @@ def register_user(request):
     )
 
     # Now save the extra info in the pilotloguser table
-    pilotlog_user = pilotlogusers.objects.create(
+    pilotlog_user = PilotLogUsers.objects.create(
         bio=req_body['bio'],
         profile_image_url=req_body['profile_img'],
         location=req_body['location'],
