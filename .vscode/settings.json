@@ -1,4 +1,12 @@
 {
     "python.pythonPath": "/Users/lukezvada/.local/share/virtualenvs/pilotlog-rJVR_K8m/bin/python",
-    "python.linting.pylintEnabled": true
+    "python.linting.pylintEnabled": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "PilotLog",
+            "database": "db.sqlite3"
+        }
+    ]
 }

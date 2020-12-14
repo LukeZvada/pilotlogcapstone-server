@@ -1,7 +1,10 @@
 [
     {
-        "id": 1, 
-        "NewLogId": 1, 
-        "airport": "BNA"
+        "model": "pilotlogapi.inbetween",
+        "pk": 1,
+        "fields": {
+            "NewLogId": 1, 
+            "airport": "BNA"
+        } 
     }
 ]

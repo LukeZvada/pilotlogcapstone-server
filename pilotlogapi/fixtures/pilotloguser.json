@@ -1,0 +1,13 @@
+[
+    {
+        "model": "pilotlogapi.pilotlogusers",
+        "pk": 1,
+        "fields": {
+            "bio": "I love flying",
+            "profile_image_url": "",
+            "created_on": "2020-07-07",
+            "active": true,
+            "user": 1
+        }
+    }
+]
