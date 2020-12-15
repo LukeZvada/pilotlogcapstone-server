@@ -1,7 +1,5 @@
 """View module for handling requests about new flight logs"""
 
-from django.core.exceptions import ValidationError
-from django.http import request
 from rest_framework import status
 from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
@@ -9,7 +7,6 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
 from django.contrib.auth.models import User
-from django.core.files.base import ContentFile
 from pilotlogapi.models import PilotLogUsers, NewLog
 
 class NewLogs(ViewSet):
@@ -19,7 +16,7 @@ class NewLogs(ViewSet):
         """Handle Post operations
 
         Returns:
-            Response -- JSON serialized post instancefdsfds  
+            Response -- JSON serialized new flight log instance  
         """
 
         #Uses the toke passed in the `Authorization` header
@@ -59,10 +56,10 @@ class NewLogs(ViewSet):
 
 
     def list(self, request):
-        """Handle Get request to posts resource
+        """Handle Get request to /newlog resource
 
         Returns:
-            Response -- JSON serialized list of posts
+            Response -- JSON serialized list of flight logs 
         """
         # Get all newlog records from the database
         log = NewLog.objects.all()
@@ -70,10 +67,9 @@ class NewLogs(ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        """Handle GET requests for single post
-
+        """Handle GET requests for single flight log -> /newlog/pk
         Returns:
-            Response -- JSON serialized game instance
+            Response -- JSON serialized newlog  instance
         """
         try:
             # pk is a parameter to this function, and 
@@ -87,7 +83,7 @@ class NewLogs(ViewSet):
             return HttpResponseServerError(ex)
 
     def destroy(self, request, pk=None):
-        """Handle DELETE requests for a single post
+        """Handle DELETE requests for a single flight log -> newlog/pk
 
         Returns:
             Response -- 200, 404, or 500 status code
@@ -105,7 +101,7 @@ class NewLogs(ViewSet):
             return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def update(self, request, pk=None):
-        """Handle PUT requests for a Post
+        """Handle PUT requests for a flight log -> newlog/pk
 
         Returns:
             Response -- Empty body with 204 status code
@@ -155,7 +151,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('first_name', 'last_name')
 
 class PilotLogUserSerializer(serializers.ModelSerializer):
-    """JSON serializer for User Posts"""
+    """JSON serializer for User Flight logs"""
 
     user = UserSerializer(many=False)
 
