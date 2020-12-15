@@ -86,6 +86,24 @@ class NewLogs(ViewSet):
         except Exception as ex:
             return HttpResponseServerError(ex)
 
+    def destroy(self, request, pk=None):
+        """Handle DELETE requests for a single post
+
+        Returns:
+            Response -- 200, 404, or 500 status code
+        """
+        try:
+            post = NewLog.objects.get(pk=pk)
+            post.delete()
+
+            return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+        except NewLog.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class UserSerializer(serializers.ModelSerializer):
     """JSON serializer for users"""
     class Meta:
