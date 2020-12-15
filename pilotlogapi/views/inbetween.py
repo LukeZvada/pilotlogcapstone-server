@@ -11,7 +11,7 @@ from rest_framework import serializers
 class InBetweenView(ViewSet):
     
     def create(self, request):
-        """Handle POST request for in_between stops during a flight"""
+        """Handle POST request for in_between stops during a flight -> /inbetween"""
 
 
         NewLogId = NewLog.objects.get(pk=request.data["NewLogId"])
@@ -28,7 +28,7 @@ class InBetweenView(ViewSet):
             return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request):
-        """Handle get requests for categories """
+        """Handle get requests for all inbetween stops during flights -> /inbetween"""
 
         in_between = inbetween.InBetween.objects.all()
         
@@ -37,18 +37,12 @@ class InBetweenView(ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        """Handle Get requests for single category
+        """Handle Get requests for single stop during a flight -> /inbetween/pk
 
         Returns:
             Response -- JSON serialized category instance
         """
         try:
-            # pk is a parameter to this function, and
-            # Django parses it from the URL route parameter
-            # http://localhost:8000/categories/2
-            #
-            # The `2` at the end of the route becomes `pk`
-
             in_between = inbetween.InBetween.objects.get(pk=pk)
             serializer = InBetweenSerializer(in_between, context={'request': request})
             return Response(serializer.data)
@@ -56,6 +50,7 @@ class InBetweenView(ViewSet):
             return HttpResponseServerError(ex)
             
     def destroy(self, request, pk=None):
+        """Handles delete request for single inbetween stop during a flight -> /inbetween/pk """
         try:
             in_between = inbetween.InBetween.objects.get(pk=pk)
             in_between.delete()
@@ -69,7 +64,8 @@ class InBetweenView(ViewSet):
             return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def update(self, request, pk=None):
-        
+        """Handles PUT request for single inbetween stop during a flight -> /inbetween/pk """
+
         in_between = inbetween.InBetween.objects.get(pk=pk)
         in_between.airport = request.data['airport']
 
@@ -79,20 +75,8 @@ class InBetweenView(ViewSet):
 
 
 
-# class InBetweenSerializer(serializers.HyperlinkedModelSerializer):
-#     """JSON serializer for categories"""
-
-#     class Meta:
-#         model = InBetweenView
-#         url = serializers.HyperlinkedIdentityField(
-#             view_name='inbetween',
-#             lookup_field='id'
-#         )
-#         fields = ('id', 'NewLogId', 'airport')
-
-
 class InBetweenSerializer(serializers.ModelSerializer):
-    """JSON serializer for posts
+    """JSON serializer for inbetween stops during a flight
  
     Arguments:
         serializer type
