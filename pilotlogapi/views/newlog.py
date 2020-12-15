@@ -1,7 +1,6 @@
 """View module for handling requests about new flight logs"""
 
-from pilotlogapi.models.inbetween import InBetween
-from pilotlogapi.views.inbetween import InBetweenView
+from pilotlogapi.models import InBetween
 from rest_framework import status
 from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
@@ -23,7 +22,7 @@ class NewLogs(ViewSet):
 
         #Uses the toke passed in the `Authorization` header
         pilotLogUser = PilotLogUsers.objects.get(user=request.auth.user)
-        in_between = InBetween.objects.get(pk=request.data["inbetweenId"])
+        # in_between = InBetween.objects.get(pk=request.data["inbetweenId"])
 
         log = NewLog()  
         log.PilotLogUserId = pilotLogUser
@@ -150,24 +149,29 @@ class NewLogs(ViewSet):
 class UserSerializer(serializers.ModelSerializer):
     """JSON serializer for users"""
     class Meta:
-        model = User
-        fields = ('first_name', 'last_name')
-
-class PilotLogUserSerializer(serializers.ModelSerializer):
-    """JSON serializer for User Flight logs"""
-
-    user = UserSerializer(many=False)
-
-    class Meta:
         model = PilotLogUsers
-        fields = ('user', )
+        fields = ('id', )
+
+# class PilotLogUserSerializer(serializers.ModelSerializer):
+#     """JSON serializer for User Flight logs"""
+
+#     user = UserSerializer(many=False)
+
+#     class Meta:
+#         model = User
+#         fields = ('user', )
 
 class InBetweenSerializer(serializers.ModelSerializer):
     """JSON serializer for inbetween stops during a flight"""
     class Meta:
-        model = InBetweenView
+        model = InBetween
         fields = ('airport')
 
+class NewLogIdSerializer(serializers.ModelSerializer):
+    """JSON serializer for inbetween stops during a flight"""
+    class Meta:
+        model = NewLog
+        fields = ('id')
 
 class NewLogSerializer(serializers.ModelSerializer):
     """JSON serializer for posts
@@ -175,7 +179,7 @@ class NewLogSerializer(serializers.ModelSerializer):
     Arguments:
         serializer type
     """
-    PilotLogUserId = PilotLogUserSerializer(many=False)
+    PilotLogUserId = UserSerializer(many=False)
     
     class Meta:
         model = NewLog

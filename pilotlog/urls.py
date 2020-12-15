@@ -13,14 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from pilotlogapi.views.inbetween import InBetweenView
-from pilotlogapi.views.newlog import NewLogs
+from pilotlogapi.views import *
 from pilotlogapi.views.auth import register_user, login_user
 from django.conf.urls import include
 from django.urls import path
 from rest_framework import routers
-from django.conf import settings
-from django.conf.urls.static import static
+# from django.conf import settings
+# from django.conf.urls.static import static
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'newlog', NewLogs, 'newlog')

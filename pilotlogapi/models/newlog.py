@@ -29,3 +29,5 @@ class NewLog(models.Model):
     flight_training_received = models.IntegerField()
     flight_training_given = models.IntegerField()
     total_flight_time = models.IntegerField()
+
+    #unmapped prop for inbetween 

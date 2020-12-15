@@ -1,7 +1,8 @@
 """View module for handling requests about inbetween stops on flight log"""
 from django.http.response import HttpResponseServerError
-from pilotlogapi.models import inbetween
-from pilotlogapi.models.newlog import NewLog
+from pilotlogapi.models import InBetween
+from pilotlogapi.models import NewLog
+from pilotlogapi.views.newlog import NewLogIdSerializer
 from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.viewsets import ViewSet
@@ -16,7 +17,7 @@ class InBetweenView(ViewSet):
 
         NewLogId = NewLog.objects.get(pk=request.data["NewLogId"])
         
-        in_between = inbetween.InBetween()
+        in_between = InBetween()
         in_between.NewLogId = NewLogId
         in_between.airport = request.data["airport"]
 
@@ -30,7 +31,7 @@ class InBetweenView(ViewSet):
     def list(self, request):
         """Handle get requests for all inbetween stops during flights -> /inbetween"""
 
-        in_between = inbetween.InBetween.objects.all()
+        in_between = InBetween.objects.all()
         
 
         serializer = InBetweenSerializer(in_between, many=True, context={'request': request})
@@ -43,7 +44,7 @@ class InBetweenView(ViewSet):
             Response -- JSON serialized category instance
         """
         try:
-            in_between = inbetween.InBetween.objects.get(pk=pk)
+            in_between = InBetween.objects.get(pk=pk)
             serializer = InBetweenSerializer(in_between, context={'request': request})
             return Response(serializer.data)
         except Exception as ex:
@@ -52,12 +53,12 @@ class InBetweenView(ViewSet):
     def destroy(self, request, pk=None):
         """Handles delete request for single inbetween stop during a flight -> /inbetween/pk """
         try:
-            in_between = inbetween.InBetween.objects.get(pk=pk)
+            in_between = InBetween.objects.get(pk=pk)
             in_between.delete()
 
             return Response({},status=status.HTTP_204_NO_CONTENT)
 
-        except inbetween.InBetween.DoesNotExist as ex:
+        except InBetween.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
         
         except Exception as ex:
@@ -66,7 +67,7 @@ class InBetweenView(ViewSet):
     def update(self, request, pk=None):
         """Handles PUT request for single inbetween stop during a flight -> /inbetween/pk """
 
-        in_between = inbetween.InBetween.objects.get(pk=pk)
+        in_between = InBetween.objects.get(pk=pk)
         in_between.airport = request.data['airport']
 
         in_between.save()
@@ -74,6 +75,18 @@ class InBetweenView(ViewSet):
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
 
+
+class NewLogIdSerializer(serializers.ModelSerializer):
+    """JSON serializer for inbetween stops during a flight
+ 
+    Arguments:
+        serializer type
+    """
+    id = NewLogIdSerializer(many=True)
+    
+    class Meta:
+        model = NewLog
+        fields =('id', )
 
 class InBetweenSerializer(serializers.ModelSerializer):
     """JSON serializer for inbetween stops during a flight
@@ -83,6 +96,8 @@ class InBetweenSerializer(serializers.ModelSerializer):
     """
     
     class Meta:
-        model = inbetween.InBetween
+        model = InBetween
         fields =('id', 'NewLogId', 'airport')
-        depth = 1
+        
+
+
