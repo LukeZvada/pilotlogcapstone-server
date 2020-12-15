@@ -104,6 +104,50 @@ class NewLogs(ViewSet):
         except Exception as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    def update(self, request, pk=None):
+        """Handle PUT requests for a Post
+
+        Returns:
+            Response -- Empty body with 204 status code
+        """
+
+        pilotLogUser = PilotLogUsers.objects.get(user=request.auth.user)
+
+        # Doing mostly the same thing as the POST, but instead of 
+        # creating a new instance of NewLog, I'm getting the newlog record
+        # from the database whose primary key is `pk`
+        log = NewLog.objects.get(pk=pk)
+        log.PilotLogUserId = pilotLogUser
+        log.date = request.data["date"]
+        log.make_and_model = request.data['make_and_model']
+        log.aircraftId = request.data['aircraftId']
+        log.fromAirport = request.data['fromAirport']
+        log.to = request.data['to'] 
+        log.landingsDay = request.data['landingsDay'] 
+        log.landingsNight = request.data['landingsNight'] 
+        log.number_of_instrument_approaches = request.data['number_of_instrument_approaches'] 
+        log.type_and_location = request.data['type_and_location'] 
+        log.airplane_single_multi = request.data['airplane_single_multi'] 
+        log.airplane_single_multi_hours = request.data['airplane_single_multi_hours'] 
+        log.instrumentActual = request.data['instrumentActual'] 
+        log.simulator_hood = request.data['simulator_hood'] 
+        log.ftd_or_simulator = request.data['ftd_or_simulator'] 
+        log.night = request.data['night'] 
+        log.cross_country_all = request.data['cross_country_all'] 
+        log.cross_country_fivezero = request.data['cross_country_fivezero'] 
+        log.pilot_in_command = request.data['pilot_in_command'] 
+        log.solo = request.data['solo'] 
+        log.ground_training = request.data['ground_training'] 
+        log.flight_training_received = request.data['flight_training_received'] 
+        log.flight_training_given = request.data['flight_training_given'] 
+        log.total_flight_time = request.data['total_flight_time']
+        log.save()
+
+        # 204 status code means everything worked by the
+        # server is not sending back any data in the response
+
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
+
 class UserSerializer(serializers.ModelSerializer):
     """JSON serializer for users"""
     class Meta:
