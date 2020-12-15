@@ -55,27 +55,27 @@ class InBetweenView(ViewSet):
         except Exception as ex:
             return HttpResponseServerError(ex)
             
-    # def destroy(self, request, pk=None):
-    #     try:
-    #         category = Category.objects.get(pk=pk)
-    #         category.delete()
+    def destroy(self, request, pk=None):
+        try:
+            in_between = inbetween.InBetween.objects.get(pk=pk)
+            in_between.delete()
 
-    #         return Response({},status=status.HTTP_204_NO_CONTENT)
+            return Response({},status=status.HTTP_204_NO_CONTENT)
 
-    #     except Category.DoesNotExist as ex:
-    #         return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+        except inbetween.InBetween.DoesNotExist as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
         
-    #     except Exception as ex:
-    #         return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as ex:
+            return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    # def update(self, request, pk=None):
+    def update(self, request, pk=None):
         
-    #     category = Category.objects.get(pk=pk)
-    #     category.label = request.data['label']
+        in_between = inbetween.InBetween.objects.get(pk=pk)
+        in_between.airport = request.data['airport']
 
-    #     category.save()
+        in_between.save()
 
-    #     return Response({}, status=status.HTTP_204_NO_CONTENT)
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
 
 
 
