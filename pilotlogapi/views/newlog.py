@@ -1,5 +1,7 @@
 """View module for handling requests about new flight logs"""
 
+from pilotlogapi.models.inbetween import InBetween
+from pilotlogapi.views.inbetween import InBetweenView
 from rest_framework import status
 from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
@@ -21,6 +23,7 @@ class NewLogs(ViewSet):
 
         #Uses the toke passed in the `Authorization` header
         pilotLogUser = PilotLogUsers.objects.get(user=request.auth.user)
+        in_between = InBetween.objects.get(pk=request.data["inbetweenId"])
 
         log = NewLog()  
         log.PilotLogUserId = pilotLogUser
@@ -158,6 +161,12 @@ class PilotLogUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = PilotLogUsers
         fields = ('user', )
+
+class InBetweenSerializer(serializers.ModelSerializer):
+    """JSON serializer for inbetween stops during a flight"""
+    class Meta:
+        model = InBetweenView
+        fields = ('airport')
 
 
 class NewLogSerializer(serializers.ModelSerializer):
