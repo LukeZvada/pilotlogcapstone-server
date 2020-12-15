@@ -1,4 +1,5 @@
 """View module for handling requests about inbetween stops on flight log"""
+from django.http.response import HttpResponseServerError
 from pilotlogapi.models import inbetween
 from pilotlogapi.models.newlog import NewLog
 from django.core.exceptions import ValidationError
@@ -35,24 +36,24 @@ class InBetweenView(ViewSet):
         serializer = InBetweenSerializer(in_between, many=True, context={'request': request})
         return Response(serializer.data)
 
-    # def retrieve(self, request, pk=None):
-    #     """Handle Get requests for single category
+    def retrieve(self, request, pk=None):
+        """Handle Get requests for single category
 
-    #     Returns:
-    #         Response -- JSON serialized category instance
-    #     """
-    #     try:
-    #         # pk is a parameter to this function, and
-    #         # Django parses it from the URL route parameter
-    #         # http://localhost:8000/categories/2
-    #         #
-    #         # The `2` at the end of the route becomes `pk`
+        Returns:
+            Response -- JSON serialized category instance
+        """
+        try:
+            # pk is a parameter to this function, and
+            # Django parses it from the URL route parameter
+            # http://localhost:8000/categories/2
+            #
+            # The `2` at the end of the route becomes `pk`
 
-    #         category = Category.objects.get(pk=pk)
-    #         serializer = CategorySerializer(category, context={'request': request})
-    #         return Response(serializer.data)
-    #     except Exception as ex:
-    #         return HttpResponseServerError(ex)
+            in_between = inbetween.InBetween.objects.get(pk=pk)
+            serializer = InBetweenSerializer(in_between, context={'request': request})
+            return Response(serializer.data)
+        except Exception as ex:
+            return HttpResponseServerError(ex)
             
     # def destroy(self, request, pk=None):
     #     try:
