@@ -24,6 +24,7 @@ from rest_framework import routers
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'newlog', NewLogs, 'newlog')
 router.register(r'inbetween', InBetweenView, 'inbetween')
+router.register(r'pilotlogprofile', PilotLogProfile, 'pilotlogprofile')
 
 
 
