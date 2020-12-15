@@ -6,7 +6,7 @@ from django.db import models
 class NewLog(models.Model):
     """NewLog database model"""
     PilotLogUserId = models.ForeignKey(PilotLogUsers, on_delete=models.CASCADE)
-    date = models.DateField(default="0000-00-00",)
+    date = models.DateField(blank=True)
     make_and_model = models.CharField(max_length=50)
     aircraftId = models.CharField(max_length=25)
     fromAirport = models.CharField(max_length=50)

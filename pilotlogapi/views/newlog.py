@@ -10,7 +10,7 @@ from rest_framework import serializers
 from rest_framework import status
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
-from pilotlogapi.models import PilotLogUsers
+from pilotlogapi.models import PilotLogUsers, NewLog
 
 class NewLogs(ViewSet):
     """Pilot Log New Flight Log"""
@@ -18,19 +18,16 @@ class NewLogs(ViewSet):
     def create(self, request):
         """Handle Post operations
 
-        Returns:fds
+        Returns:
             Response -- JSON serialized post instancefdsfds  
         """
 
         #Uses the toke passed in the `Authorization` header
         pilotLogUser = PilotLogUsers.objects.get(user=request.auth.user)
 
-        # Creat a new Python instance of the Post class
-        # and set its properties from what was sent in the
-        # body of the request from the client.
-
-        log = NewLogs()  
-        log.date= request.data['date']
+        log = NewLog()  
+        log.PilotLogUserId = pilotLogUser
+        log.date = request.data["date"]
         log.make_and_model = request.data['make_and_model']
         log.aircraftId = request.data['aircraftId']
         log.fromAirport = request.data['fromAirport']
@@ -53,22 +50,24 @@ class NewLogs(ViewSet):
         log.flight_training_received = request.data['flight_training_received'] 
         log.flight_training_given = request.data['flight_training_given'] 
         log.total_flight_time = request.data['total_flight_time'] 
-        log.pilotLogUser = pilotLogUser
+        log.save()
+
+        serializer = NewLogSerializer(
+            log, context={'request': request})
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-        # Try to save the new post to the database, then
-        # serialize the post instance as JSON, and send the
-        # JSON as a response to the client request
-        try:
-            log.save()
-            serializer = NewLogSerializer (log, context={'request': request})
-            return Response(serializer.data)
+    def list(self, request):
+        """Handle Get request to posts resource
 
-        # If anything went wrong, catch the exception and
-        # send a response with a 400 status code to tell the
-        # client that something was wrong with its request data
-        except ValidationError as ex:
-            return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
+        Returns:
+            Response -- JSON serialized list of posts
+        """
+        # Get all newlog records from the database
+        log = NewLog.objects.all()
+        serializer = NewLogSerializer(log, many=True, context={'request': request})
+        return Response(serializer.data)
 
 class UserSerializer(serializers.ModelSerializer):
     """JSON serializer for users"""
@@ -86,18 +85,18 @@ class PilotLogUserSerializer(serializers.ModelSerializer):
         fields = ('user', )
 
 
-class NewLogSerializer(serializers.HyperlinkedModelSerializer):
+class NewLogSerializer(serializers.ModelSerializer):
     """JSON serializer for posts
-
+ 
     Arguments:
         serializer type
     """
-    pilotLogUserId = PilotLogUserSerializer(many=False)
+    PilotLogUserId = PilotLogUserSerializer(many=False)
     
     class Meta:
-        model = NewLogs
-        fields =('id', 'PilotLogUserId', 'date', 'make_and_model', 'aircraftId', 'fromAirport', 'to', 'landingsDay', 'landingsNight'
+        model = NewLog
+        fields =('id', 'PilotLogUserId', 'date', 'make_and_model', 'aircraftId', 'fromAirport', 'to', 'landingsDay', 'landingsNight',
                 'number_of_instrument_approaches', 'type_and_location', 'airplane_single_multi', 'airplane_single_multi_hours', 'instrumentActual',
                 'simulator_hood', 'ftd_or_simulator', 'night', 'cross_country_all', 'cross_country_fivezero', 'pilot_in_command', 'solo',
-                'ground_training', 'ground_training_received', 'flight_time_given', 'total_flight_time')
+                'ground_training', 'flight_training_received', 'flight_training_given', 'total_flight_time')
         depth = 1
