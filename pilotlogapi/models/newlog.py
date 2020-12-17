@@ -31,3 +31,5 @@ class NewLog(models.Model):
     total_flight_time = models.IntegerField()
 
     #unmapped prop for inbetween 
+
+    #isMyToken ->  

@@ -35,7 +35,7 @@ class PilotLogProfile(ViewSet):
         """Handle Put operations
 
         Returns:
-            Response -- JSON serialized post instance
+            Response -- JSON serialized profile instance
         """
 
         pilotloguser = PilotLogUsers.objects.get(user=request.auth.user)
