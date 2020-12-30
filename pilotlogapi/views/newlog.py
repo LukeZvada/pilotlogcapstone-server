@@ -49,6 +49,7 @@ class NewLogs(ViewSet):
         log.flight_training_received = request.data['flight_training_received'] 
         log.flight_training_given = request.data['flight_training_given'] 
         log.total_flight_time = request.data['total_flight_time'] 
+        log.remarks = request.data['remarks']
         log.save()
 
         serializer = NewLogSerializer(
@@ -64,7 +65,7 @@ class NewLogs(ViewSet):
             Response -- JSON serialized list of flight logs 
         """
         # Get all newlog records from the database
-        log = NewLog.objects.all()
+        log = NewLog.objects.all().order_by('date').reverse()
         #loop through the log then see if the token sent back from the front is equal to to if isMyLog unmapped property is true 
         serializer = NewLogSerializer(log, many=True, context={'request': request})
         return Response(serializer.data)
@@ -140,6 +141,7 @@ class NewLogs(ViewSet):
         log.flight_training_received = request.data['flight_training_received'] 
         log.flight_training_given = request.data['flight_training_given'] 
         log.total_flight_time = request.data['total_flight_time']
+        log.remarks = request.data['remarks']
         log.save()
 
         # 204 status code means everything worked by the
@@ -187,5 +189,5 @@ class NewLogSerializer(serializers.ModelSerializer):
         fields =('id', 'PilotLogUserId', 'date', 'make_and_model', 'aircraftId', 'fromAirport', 'to', 'landingsDay', 'landingsNight',
                 'number_of_instrument_approaches', 'type_and_location', 'airplane_single_multi', 'airplane_single_multi_hours', 'instrumentActual',
                 'simulator_hood', 'ftd_or_simulator', 'night', 'cross_country_all', 'cross_country_fivezero', 'pilot_in_command', 'solo',
-                'ground_training', 'flight_training_received', 'flight_training_given', 'total_flight_time')
+                'ground_training', 'flight_training_received', 'flight_training_given', 'total_flight_time', 'remarks')
         depth = 1
