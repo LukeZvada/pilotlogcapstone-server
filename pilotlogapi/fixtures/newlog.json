@@ -26,7 +26,8 @@
             "ground_training": 0,
             "flight_training_received": 2,
             "flight_training_given": 0, 
-            "total_flight_time": 2
+            "total_flight_time": 2,
+            "remarks": "Good Sunset Flight"
         } 
     }
 ]

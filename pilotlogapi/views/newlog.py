@@ -92,8 +92,8 @@ class NewLogs(ViewSet):
             Response -- 200, 404, or 500 status code
         """
         try:
-            post = NewLog.objects.get(pk=pk)
-            post.delete()
+            log = NewLog.objects.get(pk=pk)
+            log.delete()
 
             return Response({}, status=status.HTTP_204_NO_CONTENT)
 
