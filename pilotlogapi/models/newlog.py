@@ -31,4 +31,11 @@ class NewLog(models.Model):
     total_flight_time = models.IntegerField()
     remarks = models.CharField(max_length=150, default="")
 
-    #unmapped prop for inbetween 
+    #unmapped prop for user logs
+    @property
+    def IsUser(self):
+        return self.__IsUser
+
+    @IsUser.setter
+    def IsUser(self, value):
+        self.__IsUser = value

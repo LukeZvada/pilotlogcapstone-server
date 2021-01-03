@@ -1,9 +1,9 @@
 [
     {
         "model": "pilotlogapi.newlog",
-        "pk": 1,
+        "pk": 2,
         "fields": {
-            "PilotLogUserId": 1, 
+            "PilotLogUserId": 2, 
             "date": "2021-10-04",
             "make_and_model": "Cessna 172",
             "aircraftId": "N189k",

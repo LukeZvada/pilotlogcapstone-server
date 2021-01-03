@@ -1,6 +1,7 @@
 """View module for handling requests about new flight logs"""
 
-from pilotlogapi.models import InBetween
+from pilotlogapi.views.pilotlogusers import PilotLogProfile
+from pilotlogapi.models import InBetween, pilotlogusers
 from rest_framework import status
 from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
@@ -9,6 +10,11 @@ from rest_framework import serializers
 from rest_framework import status
 from django.contrib.auth.models import User
 from pilotlogapi.models import PilotLogUsers, NewLog
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.viewsets import ViewSet
+from rest_framework.response import Response
+from django.core.exceptions import ValidationError
+
 
 class NewLogs(ViewSet):
     """Pilot Log New Flight Log"""
@@ -21,7 +27,7 @@ class NewLogs(ViewSet):
         """
 
         #Uses the toke passed in the `Authorization` header
-        pilotLogUser = PilotLogUsers.objects.get(user=request.auth.user)
+        pilotLogUser = PilotLogUsers.objects.get(user=request.auth.user.id)
         # in_between = InBetween.objects.get(pk=request.data["inbetweenId"])
 
         log = NewLog()  
@@ -64,9 +70,18 @@ class NewLogs(ViewSet):
         Returns:
             Response -- JSON serialized list of flight logs 
         """
+        user = PilotLogUsers.objects.get(user=request.auth.user)
         # Get all newlog records from the database
-        log = NewLog.objects.all().order_by('date').reverse()
-        #loop through the log then see if the token sent back from the front is equal to to if isMyLog unmapped property is true 
+        log = NewLog.objects.filter(PilotLogUserId_id=user.user_id).order_by('date').reverse()
+        #loop through the log then see if the token sent back from the front is equal to to if isMyLog unmapped property is true
+
+        # for l in log:
+        #     l.IsUser = None
+        #    
+        #     if l.PilotLogUserId == current_pilotLogUser:
+        #         l.IsUser = True
+        #     else:
+        #         l.IsUser = False
         serializer = NewLogSerializer(log, many=True, context={'request': request})
         return Response(serializer.data)
 
@@ -155,14 +170,14 @@ class UserSerializer(serializers.ModelSerializer):
         model = PilotLogUsers
         fields = ('id', )
 
-# class PilotLogUserSerializer(serializers.ModelSerializer):
-#     """JSON serializer for User Flight logs"""
+class PilotLogUserSerializer(serializers.ModelSerializer):
+    """JSON serializer for User Flight logs"""
 
-#     user = UserSerializer(many=False)
+    user = UserSerializer(many=False)
 
-#     class Meta:
-#         model = User
-#         fields = ('user', )
+    class Meta:
+        model = User
+        fields = ('user', )
 
 class InBetweenSerializer(serializers.ModelSerializer):
     """JSON serializer for inbetween stops during a flight"""
@@ -189,5 +204,5 @@ class NewLogSerializer(serializers.ModelSerializer):
         fields =('id', 'PilotLogUserId', 'date', 'make_and_model', 'aircraftId', 'fromAirport', 'to', 'landingsDay', 'landingsNight',
                 'number_of_instrument_approaches', 'type_and_location', 'airplane_single_multi', 'airplane_single_multi_hours', 'instrumentActual',
                 'simulator_hood', 'ftd_or_simulator', 'night', 'cross_country_all', 'cross_country_fivezero', 'pilot_in_command', 'solo',
-                'ground_training', 'flight_training_received', 'flight_training_given', 'total_flight_time', 'remarks')
+                'ground_training', 'flight_training_received', 'flight_training_given', 'total_flight_time', 'remarks', 'IsUser')
         depth = 1
