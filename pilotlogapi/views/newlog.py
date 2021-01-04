@@ -58,13 +58,10 @@ class NewLogs(ViewSet):
         log.remarks = request.data['remarks']
         log.save()
 
-        # we have the inbetweens in request.data['in_betweens']
-        # we have to loop through that array and create a new inbetween for each item in the array
-        # when we create the inbetween, we also need to add the id of the newly created log
-        for inbetween in request.data['in_betweens'] :
+        for inbetween in request.data['in_betweens']:
             newInBetween = InBetween()
             newInBetween.NewLogId = log
-            newInBetween.airport = inbetween['inbetween']
+            newInBetween.airport = inbetween
             newInBetween.save()
 
         serializer = NewLogSerializer(
