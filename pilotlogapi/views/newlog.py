@@ -77,17 +77,8 @@ class NewLogs(ViewSet):
             Response -- JSON serialized list of flight logs 
         """
         user = PilotLogUsers.objects.get(user=request.auth.user)
-        # Get all newlog records from the database
         log = NewLog.objects.filter(PilotLogUserId_id=user.user_id).order_by('date').reverse()
-        #loop through the log then see if the token sent back from the front is equal to to if isMyLog unmapped property is true
 
-        # for l in log:
-        #     l.IsUser = None
-        #    
-        #     if l.PilotLogUserId == current_pilotLogUser:
-        #         l.IsUser = True
-        #     else:
-        #         l.IsUser = False
         serializer = NewLogSerializer(log, many=True, context={'request': request})
         return Response(serializer.data)
 
