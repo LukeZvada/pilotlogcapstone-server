@@ -1,5 +1,7 @@
 # Pilot Log Server Side
 
+<img src="pilotLogDesign2.png" >
+
 ### Setup (assuming that you have Django already globally installed, along with pyenv)
 1. clone this repository
 2. cd into it 
